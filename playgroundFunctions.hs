@@ -55,4 +55,21 @@ second (_,y,_) = y
 third :: (a,b,c) -> c
 third (_,_,z) = z
 
+sumTuples :: (Num x, Ord x, Integral x) => [(x, x)] -> [x]
+sumTuples xs = [ a+b | (a, b) <- xs]
 
+head' :: [a] -> a
+head' [] = error "Vc quer o primeiro item de uma lista vazia seu imbecil? Assim nao da!"
+head' (x:_) = x
+
+tell :: (Show a) => [a] -> String
+tell [] = "Lista vazia"
+tell (x:[]) = "Lista tem um elemento: " ++ show x
+--Podia ser [x, y]. Sugarr
+tell (x:y:[]) = "Lista tem dois elementos: " ++ show x ++ " and " ++ show y
+tell (x:y:_) = "Lista eh longa. Os dois primeiros elementos sao: "  ++ show x ++ " and " ++ show y
+
+--Um pouco de recurssão pra animar
+length'' :: (Num b) => [a] -> b
+length'' [] = 0
+length'' (_:xs) = 1 + length'' xs
