@@ -1,4 +1,4 @@
--- Fun��es bobas para brincar um pouco
+-- Funções bobas para brincar um pouco
 
 doubleMe :: (Num a) => a -> a
 doubleMe x = x + x
@@ -23,7 +23,7 @@ doubleBelow100' x = (if x > 100 then x else x*2) + 1
 boomBangs :: (Num a, Ord a, Integral a) => [a] -> [String]
 boomBangs xs = [if x < 10 then "BOOM!" else "BANG!" | x <- xs, odd x]
 
---Ignorando o item da lista de input, tudo vira 1 e � somado.
+--Ignorando o item da lista de input, tudo vira 1 e é somado.
 length' :: [a] -> Int
 length' xs = sum [1 | _ <- xs]
 
@@ -46,7 +46,7 @@ sayMe 2 = "Two!"
 sayMe 3 = "Three!"
 sayMe 4 = "Four!"
 sayMe 5 = "Five!"
---Tem que ficar em último esse malandrops. Sen�o ele faz o catch. Sempre adicionar um catch all.
+--Tem que ficar em último esse malandrops. Senão ele faz o catch. Sempre adicionar um catch all.
 sayMe x = "Not between 1 and 5"
 
 --s2
