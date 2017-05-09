@@ -122,3 +122,49 @@ initials firstName lastName = [f] ++ ". " ++ [l] ++ "."
 calcImcs :: (RealFloat a) => [(a, a)] -> [a]
 calcImcs xs = [bmi w h | (w,h) <- xs]
   where bmi weight height = weight / height ^ 2
+
+---
+--- Let it be
+--- São expressões então podem ser usadas em qualquer lugar uhules. E definem funções vsf muito bom.
+
+calcAreaCylinder :: (RealFloat a) => a -> a -> a
+calcAreaCylinder r h =
+  let sideArea = 2 * pi * r * h
+      topArea = pi * r ^ 2 --Pode ser colocado na mesma linha e dividinha por ; mas fica feinho
+  in sideArea + 2 * topArea
+	
+--Alternativa com let. Valor definido no let só fica visível após definição.
+--ATENÇÃO - IN clause limita a visibilidade das declarações LET. Tanto aqui como no GHCi
+calcImcsForFatties xs = [bmi | (w, h) <- xs, let bmi = w / h ^ 2, bmi >= 25.0]
+
+---
+--- CASE Então aparentemente GUARDS são apenas syntatic sugar para CASE. O bom é que CASE é expressão então podem ser usadas EVERYWHEREEE!
+
+head'' xs = case xs of [] -> error "JA DISSE Q NÃO TEM COMO PEGAR O HEAD DE UMA LISTA VAZIA MALDITO"
+                       (x:_) -> x
+					   
+firstItemOfEveryList :: [[a]] -> [a]
+firstItemOfEveryList [] = [] 
+firstItemOfEveryList xxs = [head xs | xs <- xxs, not(null xs)]
+
+firsts [] = []
+firsts [(x:xs)] = [x]
+firsts ((x:xs):xss) = x: firsts xss
+
+maximum' :: (Ord a) => [a] -> a
+maximum' [] = error "O máximo de uma lista vazia é tua mãe maldito tu ta me testando né?"
+maximum' [x] = x
+maximum' (x:xs) = max x (maximum' xs)
+--Versão deselegante
+--maximum' [x:xs]
+--  x > maxTail = x
+--  otherwise = maxTail
+--  where maxTail = maximum' xs
+
+
+
+  
+  
+
+
+	
