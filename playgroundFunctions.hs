@@ -147,7 +147,9 @@ firstItemOfEveryList :: [[a]] -> [a]
 firstItemOfEveryList [] = [] 
 firstItemOfEveryList xxs = [head xs | xs <- xxs, not(null xs)]
 
+firsts :: [[a]] -> [a]
 firsts [] = []
+firsts ([]:xss) = error "sublist is empty"
 firsts [(x:xs)] = [x]
 firsts ((x:xs):xss) = x: firsts xss
 
@@ -161,10 +163,79 @@ maximum' (x:xs) = max x (maximum' xs)
 --  otherwise = maxTail
 --  where maxTail = maximum' xs
 
+---
+---RECURSÃO... Mano. Eu amo recursão.
+---
+replicate' :: (Num i, Ord i) => i -> a -> [a]
+replicate' n x
+  | n <= 0 = []
+  | otherwise = x:replicate' (n-1) x
 
+take' :: (Num i, Ord i) => i -> [a] -> [a]
+take' n _ | n <= 0 = []
+take' _ [] = []
+take' n (x:xs) = x : take' (n-1) xs
 
+reverse' :: [a] -> [a]
+reverse' [] = []
+reverse' (x:xs) = reverse' xs ++ [x]
+
+repeat' :: a -> [a]
+repeat' x = x:repeat' x
+
+zip' :: [a] -> [b] -> [(a, b)]
+zip' [] _ = []
+zip' _ [] = []
+zip' (x:xs) (y:ys) = (x, y): zip' xs ys
+
+elem' :: (Eq a) => a -> [a] -> Bool
+elem' _ [] = False
+elem' e (x:xs)
+  | e == x = True
+  | otherwise = elem' e xs
+
+quicksort:: (Ord a) => [a] -> [a]
+quicksort [] = []
+quicksort (x:xs) =
+  let smallerSorted = [a | a <- xs, a <= x]
+      biggerSorted = [a | a <- xs, a > x]
+  in smallerSorted ++ [x] ++ biggerSorted
   
-  
-
-
+multThree :: (Num a) => a -> a -> a -> a  
+multThree x y z = x * y * z  
 	
+---
+--- HIGHER ORDER FUNCTIONS - Agora a porra começa a ficar séria
+---
+
+--- CURRIED
+compareWithHundred :: (Num a, Ord a) => a -> Ordering
+--compareWithHundred x = compare 100 x
+compareWithHundred = compare 100
+
+divideByten :: (Floating a) => a -> a
+--divideByten x = (/10) x
+divideByten = (/10)
+
+-- Exceção é a função infixo "-". -4 é 4 negativo.
+--Função de um lado para outro
+
+applyTwice :: (a -> a) -> a -> a
+applyTwice f x = f (f x)
+
+zipWith' :: (a -> b -> c) -> [a] -> [b] -> [c]
+zipWith' _ [] _ = []
+zipWith' _ _ [] = []
+zipWith' f (x:xs) (y:ys) = f x y : zipWith' f xs ys
+
+flip' :: (a -> b -> c) -> (b -> a -> c)
+--flip' f = g where g x y = f y x
+flip' f x y = f y x
+
+--Map
+
+
+
+
+
+
