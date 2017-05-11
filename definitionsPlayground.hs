@@ -12,3 +12,6 @@ letPower = let square x = x * x in (square 2, square 3, square 4)
 
 -- flip div cria uma função que recebe dois parametros, faz flip e divide. Viva o currie
 maluquice = zipWith (flip div) [2,2..] [10,8,6,4,2]
+
+-- Curried + map
+let listOfFuns = map (*) [0..]

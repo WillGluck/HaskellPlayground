@@ -197,8 +197,8 @@ elem' e (x:xs)
 quicksort:: (Ord a) => [a] -> [a]
 quicksort [] = []
 quicksort (x:xs) =
-  let smallerSorted = [a | a <- xs, a <= x]
-      biggerSorted = [a | a <- xs, a > x]
+  let smallerSorted = [a | a <- xs, a <= x] --quicksort (filter (<=x) xs)
+      biggerSorted = [a | a <- xs, a > x] 	--quicksort (filter (>x) xs)
   in smallerSorted ++ [x] ++ biggerSorted
   
 multThree :: (Num a) => a -> a -> a -> a  
@@ -233,6 +233,46 @@ flip' :: (a -> b -> c) -> (b -> a -> c)
 flip' f x y = f y x
 
 --Map
+map' :: (a -> b) -> [a] -> [b]
+map' _ [] = []
+map' f (x:xs) = f x : map' f xs
+
+sumThreeToEach :: (Num a) => [a] -> [a]
+sumThreeToEach x = map (3+) x
+
+--Filter
+
+filter' :: (a -> Bool) -> [a] -> [a]
+filter' _ [] = []
+filter' p (x:xs)
+  | p x = x : filter p xs
+  | otherwise = filter p xs
+   
+
+returnTheThrees :: (Eq a, Num a) => [a] -> [a]
+returnTheThrees x = filter (==3) x
+
+largestDivisible :: (Integral a) => a
+largestDivisible = head (filter p [100000, 99999..])
+	where p x = mod x 3829 == 0
+	
+--takeWhile
+
+getSquareSum =  sum (takeWhile (<10000) (filter odd (map (^2) [1..])))
+--getSquareSum = sum (takeWhile(<10000) [n^2 | n <- [1..], odd (n^2)])
+
+collatzSequence :: (Integral a) => a -> [a]
+collatzSequence 1 = [1]
+collatzSequence n
+  | even n = n: collatzSequence (n `div` 2)
+  | odd n = n: collatzSequence (n * 3 + 1)
+  
+numLongCollatzSequences :: Int
+numLongCollatzSequences = length (filter isLong (map (collatzSequence) [0..100])) where isLong xs = length xs > 15
+
+	
+
+
 
 
 
