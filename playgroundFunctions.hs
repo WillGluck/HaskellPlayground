@@ -132,7 +132,7 @@ calcAreaCylinder r h =
   let sideArea = 2 * pi * r * h
       topArea = pi * r ^ 2 --Pode ser colocado na mesma linha e dividinha por ; mas fica feinho
   in sideArea + 2 * topArea
-	
+
 --Alternativa com let. Valor definido no let só fica visível após definição.
 --ATENÇÃO - IN clause limita a visibilidade das declarações LET. Tanto aqui como no GHCi
 calcImcsForFatties xs = [bmi | (w, h) <- xs, let bmi = w / h ^ 2, bmi >= 25.0]
@@ -142,9 +142,9 @@ calcImcsForFatties xs = [bmi | (w, h) <- xs, let bmi = w / h ^ 2, bmi >= 25.0]
 
 head'' xs = case xs of [] -> error "JA DISSE Q NÃO TEM COMO PEGAR O HEAD DE UMA LISTA VAZIA MALDITO"
                        (x:_) -> x
-					   
+
 firstItemOfEveryList :: [[a]] -> [a]
-firstItemOfEveryList [] = [] 
+firstItemOfEveryList [] = []
 firstItemOfEveryList xxs = [head xs | xs <- xxs, not(null xs)]
 
 firsts :: [[a]] -> [a]
@@ -197,13 +197,13 @@ elem' e (x:xs)
 quicksort:: (Ord a) => [a] -> [a]
 quicksort [] = []
 quicksort (x:xs) =
-  let smallerSorted = [a | a <- xs, a <= x] --quicksort (filter (<=x) xs)
-      biggerSorted = [a | a <- xs, a > x] 	--quicksort (filter (>x) xs)
+  let smallerSorted = [a | a <- xs, a <= x]
+      biggerSorted = [a | a <- xs, a > x]
   in smallerSorted ++ [x] ++ biggerSorted
-  
-multThree :: (Num a) => a -> a -> a -> a  
-multThree x y z = x * y * z  
-	
+
+multThree :: (Num a) => a -> a -> a -> a
+multThree x y z = x * y * z
+
 ---
 --- HIGHER ORDER FUNCTIONS - Agora a porra começa a ficar séria
 ---
@@ -247,16 +247,20 @@ filter' _ [] = []
 filter' p (x:xs)
   | p x = x : filter p xs
   | otherwise = filter p xs
-   
+
 
 returnTheThrees :: (Eq a, Num a) => [a] -> [a]
 returnTheThrees x = filter (==3) x
 
 largestDivisible :: (Integral a) => a
 largestDivisible = head (filter p [100000, 99999..])
-	where p x = mod x 3829 == 0
-	
+  where p x = mod x 3829 == 0
+
 --takeWhile
+--Takewhile
+sumOfAllOdSquaredSmallerThan :: (Integral a) =>  a -> a
+--sumOfAllOdSquaredSmallerThan x = sum (takeWhile (<x) (filter odd (map (^2) [1..])))
+sumOfAllOdSquaredSmallerThan x = sum (takeWhile (<x) [n^2 | n <- [1..], odd n])
 
 getSquareSum =  sum (takeWhile (<10000) (filter odd (map (^2) [1..])))
 --getSquareSum = sum (takeWhile(<10000) [n^2 | n <- [1..], odd (n^2)])
@@ -266,16 +270,8 @@ collatzSequence 1 = [1]
 collatzSequence n
   | even n = n: collatzSequence (n `div` 2)
   | odd n = n: collatzSequence (n * 3 + 1)
-  
-numLongCollatzSequences :: Int
-numLongCollatzSequences = length (filter isLong (map (collatzSequence) [0..100])) where isLong xs = length xs > 15
 
-	
-
-
-
-
-
-
-
-
+numLongCollatzSequence :: Int
+--numLongCollatzSequence = length (filter isLong (map collatzSequence [1..100])) where isLong xs = length xs > 15
+--Lambda
+numLongCollatzSequence = length (filter (\xs -> length xs > 15) (map collatzSequence [1..100]))
