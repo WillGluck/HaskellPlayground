@@ -76,6 +76,30 @@ sortBy (compare `on` length) xs
 
 --DATA.CHAR
 
+-- isControl (verifica se é caracter de controle), isSpace, isLower, isUpper, isAlpha (letra), isAlphaNum (número e letra), isPrint,
+-- isDigit, isOctoDigit (é um dígito octal), isHexDigit, isLetter, isMark (verifica se é um caracter unicode de marcação..francês),
+-- isNumber, isPunctuation, isSymbol, isSeparator (espaços e separadores), isAscii, isAsciiUpper, isAsciiLower...
+all isAlphaNum "bobby283"
+--True
+--Simulando words com isSpace
+filter (not. any isSpace) . groupBy ((==) `on` isSpace)) $  "hey guys its me"
+-- ["hey", "guys", "its", "me"]
+-- generalCategory - identifica a GeneralCategory (extende de Eq) de um caracter. É um enumerador
+generalCategory 'A'
+-- UppercaseLetter
+-- Para manipular: toUpper, toLower, toTitle (as vzs é UpperCase), digitToInt (0..9) (a..f), intToDigit.
+-- Ord retorna o valor numérico que representa o caracter. chr retorna o char de um valor numérico
+encode :: Int -> String -> String
+encode shift text =
+  let ords = map ord text
+      shifted = map (+shift) ords
+  in map chr shifted
+
+decode :: Int -> String -> String
+decode shift text = encode (negate shift) text
+
+--DATA.MAP
+
 
 
 import Geometry.Sphere as Sphere
