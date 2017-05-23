@@ -9,7 +9,7 @@ data Point = Point Float Float deriving (Show)
 --data Shape = Circle Float Float Float | Rectangle Float Float Float Float deriving (Show) -- The Shape type is part of the Show typeclass
 data Shape = Circle Point Float | Rectangle Point Point deriving (Show)
 
---Circle e Rectangle are value constructors
+--Circle and Rectangle are value constructors
 --Shape is a type
 
 --Calculate the surface
@@ -53,6 +53,7 @@ module Shapes
 -- etc...
 --Solution - Avoid access methods and improve Show
 
+{-
 data Person = Person {
   firstName :: String,
   lastName :: String,
@@ -61,3 +62,50 @@ data Person = Person {
   phoneNumber :: String,
   flavor :: String
 } deriving (Show)
+-}
+
+--Type parameters
+-- type constructors...
+--data Maybe a = Nothing | Just a -> Maybe is a Type constructor. If "a" is a char, the type will be Maybe Char. Nothing is polymorphic
+-- [] is a type constructor -> [Char], [Int]...
+-- typeclass constraint on tupe constructors
+-- data (Ord k) => Map k v = ...
+-- but the convention is "never add typeclass constraints in data declarations". Because then every method to map will have to need respect that typeclass, even when they don't care.
+-- Lets create a data with type constructors -> Type constructors "=" left side. Value constructors "=" right side (possubly separated by "|"'s)
+data Vector a = Vector a a a deriving (Show)
+
+vplus :: (Num t) => Vector t -> Vector t -> Vector t
+(Vector i j k) `vplus` (Vector l m n) = Vector (i+l) (j+m) (k+n)
+
+vecMult :: (Num t) => Vector t -> t -> Vector t
+(Vector i j k) `vecMult` m = Vector (i*m) (j*m) (k*m)
+
+scalarMult :: (Num t) => Vector t -> Vector t -> t
+(Vector i j k) `scalarMult` (Vector l m n) = i*l + j*m + k*n
+
+-- We put only one Type for each vector, because he have just one type in the type constructor.
+
+-- Derived Instances
+
+data Person = Person {
+  firstName :: String,
+  lastName :: String,
+  age :: Int
+} deriving (Eq, Show, Read)
+
+-- Eq Show Read
+-- let beatles = [john, paul, ringo, harrison]
+-- ringo `elem` beatles -> True
+-- Read need explicit type annotation when cannot use type inference
+-- read "..." :: Person. Or "..." == ringo
+-- When reading a parameterized type, you need to fill in the type parameter -> read "Just" :: Maybe Char
+
+-- Ord
+-- When deriving type Ord and comparing two value constructors of the same type, the first declared is taken as the smaller.
+-- data Bool = False | True deriving (Ord) -> True > False -> True
+
+-- When all the values constructors take no parameters / fields, it can be part of Enum and Bounded
+data Day = Monday | Tuesday | Wednesday | Thursday | Friday | Saturday | Sunday
+  deriving (Eq, Show, Read, Ord, Bounded, Enum)
+
+-- Type synonyms
