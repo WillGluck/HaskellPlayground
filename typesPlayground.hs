@@ -2,6 +2,8 @@
 
 -- Intro
 
+import qualified Data.Map as Map
+
 --data Bool = False | True
 --data Int = -2147483648 | -2147483647 | ... | -1 | 0 | 1 | 2 | ... 2147483647
 
@@ -109,3 +111,31 @@ data Day = Monday | Tuesday | Wednesday | Thursday | Friday | Saturday | Sunday
   deriving (Eq, Show, Read, Ord, Bounded, Enum)
 
 -- Type synonyms
+
+-- type String = [Char]
+-- type PhoneBook = [(String, String)]
+type PhoneNumber = String
+type Name = String
+type PhoneBook = [(Name, PhoneNumber)]
+-- inPhoneBook :: Name -> PhoneNumber -> PhoneBook -> Bool
+-- Parameterized
+type AssocList k v = [(k,v)] --Type Constructor. Just like "Maybe"
+-- Just like functions, type constructos can be partially applied
+--type IntMap v = Map.Map Int v
+type IntMap = Map.Map Int -- Same
+-- data Either a b = Left a | Right b deriving (Eq, Ord, Read, Show)
+
+data LockerState = Taken | Free deriving (Show, Eq)
+type Code = String
+type LockerMap = Map.Map Int (LockerState, Code)
+
+lockerLookup :: Int -> LockerMap -> Either String Code
+lockerLookup lockerNumber lockerMap =
+  case Map.lookup lockerNumber lockerMap of
+    Nothing -> Left $ "Locker number " ++ show lockerNumber ++ " doesn't exist!"
+    Just (state, code) -> if state /= Taken
+                            then Right code
+                            else Left $ "Locker " ++ show lockerNumber ++ " is already taken!"
+
+
+-- Recursive Data Structures
