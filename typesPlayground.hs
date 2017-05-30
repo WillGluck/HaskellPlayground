@@ -263,3 +263,13 @@ instance functor Maybe where
 instance Functor Tree where
   fmap f EmptyTree = EmptyTree
   fmap f (Node a left right) = Node (f a) (fmap f left) (fmap f right)
+
+{-
+instance Functor (Either a) where
+  fmap f (Right x) = Right (f x)
+  fmap f (Left x) = Left x
+-}
+
+-- :k is kind of a type.
+-- Types are the labels of values and kinds are the labels of tyoes,
+-- Kinds and some type-foo < - Read again later.
