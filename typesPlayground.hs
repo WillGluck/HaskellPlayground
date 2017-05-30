@@ -177,3 +177,89 @@ treeElem x (Node a left right)
 
 
 -- Typeclasses 102
+
+--Functions body is not mandatory, just the type declarations.
+
+{-
+class Eq a where
+  (==) :: a -> a -> Bool
+  (/=) :: a -> a -> Bool
+  x == y = not (x /= y) --Mutual recursion
+  x /= y = not (x == y)
+-}
+
+data TrafficLight = Red | Yellow | Green
+
+-- If we didn't had the function body as before, we would have to create a pattern to every == and every !=. Haskell wouldn't know how the two functions are related.
+-- Same as deriving Eq
+instance Eq TrafficLight where
+  Red == Red = True
+  Yellow == Yellow = True
+  Green == Green = True
+  _ == _ = False
+
+-- Not the same as deriving Show, because whe created a custom String value.
+instance Show TrafficLight where
+  show Red = "Red Light"
+  show Yellow = "Yellow Light"
+  show Green = "Green Light"
+
+-- class (Eq a) => Num a where... <- typeclasses that are subclasses of other typeclasses.
+
+{-
+instance (Eq m) => Eq (Maybe m) where
+  Just x == Just y = x == y
+  Nothing == Nothing = True
+  _ == _ = False
+-}
+
+-- :info YourTypeClass, :info (types and types constructors)
+
+-- Creating a Yes-Not Typeclass
+
+class YesNo a where
+  yesno :: a -> Bool
+
+instance YesNo Int where
+  yesno 0 = True
+  yesno _ = False
+
+instance YesNo [a] where
+  yesno [] = False
+  yesno _ = True
+
+instance YesNo Bool where
+  yesno = id -- Return the same value... so True is True and False is False d'oh
+
+instance YesNo (Maybe a) where
+  yesno (Just _) = True
+  yesno Nothing = False
+
+instance YesNo (Tree a) where
+  yesno EmptyTree = False
+  yesno _ = True
+
+instance YesNo TrafficLight where
+  yesno Red = False
+  yesno _ = True
+
+yesnoIf :: (YesNo y) => y -> a -> a -> a
+yesnoIf yesnoVal yesResult noResult = if yesno yesnoVal then yesResult else noResult
+
+-- The Functor typeclass
+-- Types that can act like a box can be functors (Map, Set, Maybe and even our Tree type)
+{-
+class Functor f where -- F is not a concrete type oO
+  fmap :: (a -> b) -> f a -> f b
+
+instance Functor [] where
+  fmap = map
+
+instance functor Maybe where
+  fmap f (Just x) = Just (f x)
+  fmap f Nothing = Nothing
+-}
+
+instance Functor Tree where
+  fmap f EmptyTree = EmptyTree
+  fmap f (Node a left right) = Node (f a) (fmap f left) (fmap f right)
