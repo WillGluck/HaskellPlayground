@@ -94,6 +94,7 @@ main = forever $ do
 -}
 
 -- formM - just like mapM, but the parameters are switched around. WHy? let's see
+{-
 main = do
   colors <- forM [1,2,3,4] (\a -> do
     putStrLn $ "Wich color do ou associate with the number " ++ show a ++ "?"
@@ -101,8 +102,40 @@ main = do
     return color) --returns IO action so the <- bind the value
   putStrLn "The colors that you associate with 1, 2, 3 and 4 are:"
   mapM putStrLn colors
+-}
 
 --NOTES: remember putStrLn is not a function that prints. Is a function that receives a String and return a IO String action.
 --When this IO action is performed a string is printed on the screen.
 
 -- Files and Streams
+
+-- getContents - getLine until it reach EOF
+-- Replace for the example using forever before.
+{-
+import Data.Char
+main = do
+  contents <- getContents
+  putStr (map toUpper contents)
+-}
+
+
+-- Using getContents and interact, and then a very simple way using function application and composition (three mains)
+{-
+
+main = do
+  contents <- getContents
+  putStr (shortLinesOnly contents)
+
+main = interact shortLinesOnly
+
+shortLinesOnly :: String -> String
+shortLinesOnly input =
+  let allLines = lines input
+      shortLines = filter (\line -> length line < 10) allLines
+      result = unlines shortLines
+  in result
+
+main = interact $ unlines . filter ((<10) . length) .lines
+-}
+
+-- respondPalindromes...
