@@ -1,5 +1,7 @@
 -- Main always has a type of IO Something. IO (), IO String...
 import Data.Char
+import System.Directory
+import Data.List
 import Control.Monad
 import System.IO
 
@@ -114,7 +116,7 @@ main = do
 -- getContents - getLine until it reach EOF
 -- Replace for the example using forever before.
 {-
-import Data.Char
+
 main = do
   contents <- getContents
   putStr (map toUpper contents)
@@ -192,3 +194,34 @@ main = do
 -}
 
 -- appendFile - Same as writeFile, but dont reset the cursor to position zero.
+
+--WithFile is lazy. Usually, the buffer size for files is a line, but it can be changed using hSetBuffering (takes a handle and a BufferMode)
+--BufferMode = NoBuffering | LineBuffering | BlockBuffering (Maybe Int) // bytes
+
+{-
+main = do
+  withFile "filePath" ReadMode (\handle -> do
+    hSetBuffering handle $BlockBuffering (Just 2048)
+    contents <- hGetContents handle
+    putStr contents)
+-}
+
+-- hFlush - Faz o flush que o BlockBuffering define manualmente.
+
+main = do
+  handle <- openFile "filePath" ReadMode
+  (tempName, tempHandle) <- openTempFile "folderPath" "tempFilePartialAlias"
+  contents <- hGetContents handle
+  let todoTasks = lines contents
+      numberedTasks = zipWith (\n line -> show n ++ " - " ++ line) [0..] todoTasks
+  putStrLn "There are your TO-DO items:"
+  putStr $ unlines numberedTasks
+  putStrLn "Wich one do you want to delete?"
+  numberString <- getLine
+  let number = read numberString
+      newTodoItems = delete (todoTasks !! number) todoTasks
+  hPutStr tempHandle $ unlines newTodoItems
+  hClose handle
+  hClose tempHandle
+  removeFile "filePath"
+  renameFile tempName "filePath"
