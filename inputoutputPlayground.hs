@@ -1,6 +1,8 @@
 -- Main always has a type of IO Something. IO (), IO String...
 import Data.Char
 import Control.Monad
+import System.IO
+
 
 {-
 main = do
@@ -139,3 +141,54 @@ main = interact $ unlines . filter ((<10) . length) .lines
 -}
 
 -- respondPalindromes...
+respondPalindromes = unlines . map (\xs -> if isPalindrome xs then "palindrome" else "not palindrome") . lines
+  where isPalindrome xs = xs == reverse xs
+
+--main = interact respondPalindromes
+
+{-
+main = do
+  handle <- openFile "filePath" ReadMode -- data IOMode = ReadMode | WriteMode | AppendMode | ReadWriteMode
+  contents <- hGetContents handle
+  putStr contents
+  hClose handle
+-}
+
+--Alternative using withFile
+
+{-
+main = do
+  withFile "filePath" ReadMode (\handle -> do
+    contents <- hGetContents handle
+    putStr contents)
+-}
+
+
+--Insight of the withFile method
+{-
+withFile' :: FilePath -> IOMode -> (Handle -> IO a) -> IO a
+withFile' path mode f = do
+  handle <- openFile path module
+  result <- f handle
+  hClose handle
+  return result
+-}
+
+-- just like we have hGetContents that works like getContents, there is hGetLine, hPutStr, hPutStrLn, hGetChar, etc...
+
+-- readFile - quick way to open a file, get the content and close it.
+{-
+main = do
+  contents <- readFile "filePath"
+  putStr contents
+-}
+
+-- writeFile - Sample taking a file and rewriting it with uppercase
+-- ALWAYS RESET TO POSITION ZERO
+{-
+main = do
+  contents <- readFile "filePath"
+  writeFile "filePath" (map toUpper contents)
+-}
+
+-- appendFile - Same as writeFile, but dont reset the cursor to position zero.
