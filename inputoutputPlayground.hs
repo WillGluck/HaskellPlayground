@@ -4,6 +4,8 @@ import System.Directory
 import Data.List
 import Control.Monad
 import System.IO
+import System.Environment
+
 
 
 {-
@@ -30,8 +32,8 @@ main = do
       putStrLn $ reverseWords line
       main --Call main again
 -}
-reverseWords :: String -> String
-reverseWords = unwords . map reverse .words
+--reverseWords :: String -> String
+--reverseWords = unwords . map reverse .words
 {-
 main = do
   return () -- does nothing
@@ -143,8 +145,8 @@ main = interact $ unlines . filter ((<10) . length) .lines
 -}
 
 -- respondPalindromes...
-respondPalindromes = unlines . map (\xs -> if isPalindrome xs then "palindrome" else "not palindrome") . lines
-  where isPalindrome xs = xs == reverse xs
+--respondPalindromes = unlines . map (\xs -> if isPalindrome xs then "palindrome" else "not palindrome") . lines
+--  where isPalindrome xs = xs == reverse xs
 
 --main = interact respondPalindromes
 
@@ -207,7 +209,7 @@ main = do
 -}
 
 -- hFlush - Faz o flush que o BlockBuffering define manualmente.
-
+{-
 main = do
   handle <- openFile "filePath" ReadMode
   (tempName, tempHandle) <- openTempFile "folderPath" "tempFilePartialAlias"
@@ -225,3 +227,55 @@ main = do
   hClose tempHandle
   removeFile "filePath"
   renameFile tempName "filePath"
+-}
+
+-- COMMAND LINE ARGUMENTS
+-- getArgs (returns a IO [String]) and getProgramName (returns a IO String)
+
+--Lets create a main to add, remove and view tasks. Ex: todo add todo.txt "Find the magic sword of power"
+
+
+
+{------------------------------------------------------------------------------------------
+
+dispatch :: [(String, [String] -> IO ())]
+dispatch = [
+    ("add", add),
+    ("view", view),
+    ("remove", remove)
+  ]
+
+main = do
+  (command:args) <- getArgs --Uses pattern matching to get the action to be performed
+  let (Just action) = lookup command dispatch --Look for the action string in the map. Uses patterh matching again to extract the action from the Maybe
+  action args
+
+add :: [String] -> IO()
+add [fileName, todoItem] = appendFile fileName (todoItem ++ "\n")
+
+view :: [String] -> IO()
+view [fileName] = do
+  contents <- readFile fileName
+  let todoTasks = lines contents
+      numberedTasks = zipWith (\n line -> show n ++ " - " ++ line) [0..] todoTasks
+  putStr $ unlines numberedTasks
+
+remove :: [String] -> IO()
+remove [fileName, numberString] = do
+  handle <- openFile fileName ReadMode
+  (tempName, tempHandle) <- openTempFile "." "temp"
+  contents <- hGetContents handle
+  let number = read numberString
+      todoTasks = lines contents
+      newTodoItems = delete (todoTasks !! number) todoTasks
+  hPutStr tempHandle $ unlines newTodoItems
+  hClose handle
+  hClose tempHandle
+  removeFile fileName
+  renameFile tempName fileName
+
+------------------------------------------------------------------------------------------}
+
+
+
+--Randomness
