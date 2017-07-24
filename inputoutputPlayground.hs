@@ -5,8 +5,8 @@ import Data.List
 import Control.Monad
 import System.IO
 import System.Environment
-
-
+import System.Random
+import Control.Monad()
 
 {-
 main = do
@@ -275,7 +275,68 @@ remove [fileName, numberString] = do
   renameFile tempName fileName
 
 ------------------------------------------------------------------------------------------}
-
-
-
 --Randomness
+--RandomGen typeclass - indicate a "random" generator
+--Random typeclass - value that can be random (boolean, numbers, etc...)
+--random function - takes a RandomGen and returns a (Random, RandomGen) - Need to know the type of the RandomGen and Random when called.
+
+threeCoins :: StdGen -> (Bool, Bool, Bool)
+threeCoins gen =
+  let (firstCoin, newGen) = random gen --Don't need the type because the function already has a type declaration.
+      (secondCoin, newGen') = random newGen
+      (thirdCoin, newGen'') = random newGen'
+  in (firstCoint, secondCoin, thirdCoin)
+
+--Forever loop of random values.
+randoms' :: (RandomGen g, Random a) => g -> [a]
+randoms' gen = let (value, newGen) = random' gen in value:randoms' newGen
+
+finiteRandoms :: (RandomGen g, Random a, Num n) => n -> g -> ([a], g)
+finiteRandoms 0 gen = []
+finiteRandoms n gen =
+  let (value, newGen) = random gen
+      (restOfList, finalGen) = finiteRandoms (n-1) newGen
+  in (value:restOfList, finalGen)
+
+--Just like random, but it takes lower and upper bounds.
+--randomR:: (RandomGen g, Random a) :: (a, a) -> g -> (a, g)
+
+--randomRs - Is kind of the randoms of the randomR. Takes bounds but return a stream of random values.
+
+-- getStdGen - return a value of IO StdGen type. If called twice in the same execution will return the same RandomGen
+-- newStdGen - return a new RandomGen and update the global one.
+
+--Guess my number "appzinho" Version 1
+
+main = do
+    gen <- getStdGen
+    askForNumber gen
+
+askForNumber :: StdGen -> IO()
+askForNumber gen = do
+  let (randomNumber, newGen) = randomR (1,10) gen :: (Int, StdGen)
+  putStr "Wich number in the range from 1 to 10 am I thinking of?"
+  numberString <- getLine
+  when (not $ null numberString) $ do
+    let number = reads numberString
+    if randomNumber == number
+      then putStrLn "You are correct!"
+      else putStrLn $ "Sorry, it was " ++ show randomNumber
+    askForNumber newGen
+
+--Guess my number "appzinho" Version 2
+
+main = do
+  gen <- getStrGen
+  let (randomNumber, _) = randomR (1,10) gen :: (Int, StdGen)
+  putStr "Wich number in the range from 1 to 10 am I thinking of?"
+  numberString <- getLine
+  when (not $ null numberString) $ do
+    let number = reads numberString
+    if randomNumber == number
+      then putStrLn "You are correct!"
+      else putStrLn $ "Sorry, it was " ++ show randomNumber
+    newStdGen
+    main
+
+-- Bytestrings
