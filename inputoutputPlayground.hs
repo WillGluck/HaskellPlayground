@@ -7,6 +7,8 @@ import System.IO
 import System.Environment
 import System.Random
 import Control.Monad()
+import qualified Data.ByteString.Lazy as B
+import System IO.Error
 
 {-
 main = do
@@ -340,3 +342,52 @@ main = do
     main
 
 -- Bytestrings
+-- Alternative to deal with files when optimization is needed.
+-- It Has the lazy and the strict version. THh lazy uses 64 bytes chunks, instead of 8 bytes.
+
+main = do
+  (fileName1:fileName2:_) <- getArgs
+  copyFile fileName1 fileName2
+
+copyFile :: FilePath -> FilePath -> IO()
+copyFile source dest = do
+  contents <- B.readFile source
+  B.writeFile dest contents
+
+-- Exceptions. Haskell has exceptions and the Monads Maybe (Just x or Nothing) and Either
+
+-- doesFileExist check returns a IO Bool that indicate if the file exists.
+main = do (fileName:_) <- getArgs
+          fileExists <- doesFileExist fileName
+          if fileExists
+            then do contents <- readFile fileName
+                    putStrLn % "The file has " ++ show (length (lines contents)) ++ " lines!"
+            else do putStrLn "The file doesn't exist!"
+
+-- catch action handle
+main  = toTry `catch` handler
+toTry :: IO()
+toTry = do (fileName:_) <- getArgs
+           contents <- readFile fileName
+           putStrLn $ "The file has " ++ show (length (lines contents)) ++ " lines!"
+handler :: IOError -> IO()
+handler e = putStrLn "Whoops, had some trouble!"
+
+-- catch cheking the type of the exception
+-- isDoesNotExistError - indicates that the error happen because the file didn't exist
+-- ioError - takes a IOError and return a IO a (anything)
+main = toTry `catch` handler
+
+toTry :: IO ()
+toTry = do
+  (fileName:_) <- getArgs
+  contents <- readFile fileName
+  putStrLn $ "The file has " ++ show (length (lines contents)) ++ " lines!"
+
+handler :: IOError -> IO ()
+handler e
+  | isDoesNotExistError e = putStrLn "The file doesn't exist!"
+  | otherwise = ioError e
+
+--isAlreadyExistsError, isDoesNotExistError, isAlreadyInUseError, isFullError, isEOFError, isIllegalOperation, isPermissionError, isUserError
+-- ex: ioError $ userError "remote computer unplugged!"
