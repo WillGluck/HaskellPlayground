@@ -309,7 +309,7 @@ finiteRandoms n gen =
 -- newStdGen - return a new RandomGen and update the global one.
 
 --Guess my number "appzinho" Version 1
-
+{-
 main = do
     gen <- getStdGen
     askForNumber gen
@@ -325,9 +325,10 @@ askForNumber gen = do
       then putStrLn "You are correct!"
       else putStrLn $ "Sorry, it was " ++ show randomNumber
     askForNumber newGen
+-}
 
 --Guess my number "appzinho" Version 2
-
+{-
 main = do
   gen <- getStrGen
   let (randomNumber, _) = randomR (1,10) gen :: (Int, StdGen)
@@ -340,11 +341,13 @@ main = do
       else putStrLn $ "Sorry, it was " ++ show randomNumber
     newStdGen
     main
+-}
 
 -- Bytestrings
 -- Alternative to deal with files when optimization is needed.
 -- It Has the lazy and the strict version. THh lazy uses 64 bytes chunks, instead of 8 bytes.
 
+{-
 main = do
   (fileName1:fileName2:_) <- getArgs
   copyFile fileName1 fileName2
@@ -353,18 +356,22 @@ copyFile :: FilePath -> FilePath -> IO()
 copyFile source dest = do
   contents <- B.readFile source
   B.writeFile dest contents
+-}
 
 -- Exceptions. Haskell has exceptions and the Monads Maybe (Just x or Nothing) and Either
 
 -- doesFileExist check returns a IO Bool that indicate if the file exists.
+{-
 main = do (fileName:_) <- getArgs
           fileExists <- doesFileExist fileName
           if fileExists
             then do contents <- readFile fileName
                     putStrLn % "The file has " ++ show (length (lines contents)) ++ " lines!"
             else do putStrLn "The file doesn't exist!"
+-}
 
 -- catch action handle
+{-
 main  = toTry `catch` handler
 toTry :: IO()
 toTry = do (fileName:_) <- getArgs
@@ -372,6 +379,7 @@ toTry = do (fileName:_) <- getArgs
            putStrLn $ "The file has " ++ show (length (lines contents)) ++ " lines!"
 handler :: IOError -> IO()
 handler e = putStrLn "Whoops, had some trouble!"
+-}
 
 -- catch cheking the type of the exception
 -- isDoesNotExistError - indicates that the error happen because the file didn't exist
@@ -384,10 +392,23 @@ toTry = do
   contents <- readFile fileName
   putStrLn $ "The file has " ++ show (length (lines contents)) ++ " lines!"
 
+--isAlreadyExistsError, isDoesNotExistError, isAlreadyInUseError, isFullError, isEOFError, isIllegalOperation, isPermissionError, isUserError
+-- ex: ioError $ userError "remote computer unplugged!" <- throws a error with a custom message
+
+{-
 handler :: IOError -> IO ()
 handler e
   | isDoesNotExistError e = putStrLn "The file doesn't exist!"
+-- | Other checks is....
   | otherwise = ioError e
+-}
 
---isAlreadyExistsError, isDoesNotExistError, isAlreadyInUseError, isFullError, isEOFError, isIllegalOperation, isPermissionError, isUserError
--- ex: ioError $ userError "remote computer unplugged!"
+--ioGetFileName to get the path of the fileName
+
+handler :: IOError -> IO()
+handler e
+  | isDoesNotExistError e =
+    case ioeGetFileName e of
+      Just path -> putStrLn $ "Whoops! File does not exist at: " ++ path
+      Nothing -> putStrLn $ "Whoops! File does not exists at unkown location!"
+  | otherwise = ioError e
