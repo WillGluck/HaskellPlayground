@@ -64,8 +64,8 @@ If we check the first law it will fail. It's deriving Functor but it's not a Fun
 
 --Applicative Functors
 {-
+
 Represented by Applicative typeclass, found in the Control.Applicative module. It's kind of a enhanced Functor.
 Notes: mapping "multi-parameter" functions over functors get us functors that contain functions inside them
-
 
 -}

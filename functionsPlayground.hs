@@ -133,7 +133,7 @@ calcAreaCylinder r h =
       topArea = pi * r ^ 2 --Pode ser colocado na mesma linha e dividinha por ; mas fica feinho
   in sideArea + 2 * topArea
 
---Alternativa com let. Valor definido no let só fica visível após definição.
+--Alternativa com let. Valor definido no let só fica visível após definição ou no output (antes do |).
 --ATENÇÃO - IN clause limita a visibilidade das declarações LET. Tanto aqui como no GHCi
 calcImcsForFatties xs = [bmi | (w, h) <- xs, let bmi = w / h ^ 2, bmi >= 25.0]
 
@@ -289,7 +289,7 @@ maximum'' :: (Ord a) => [a] -> a
 maximum'' = foldl1 (\acc x -> if x > acc then x else acc)
 
 reverse'' :: [a] -> [a]
-reverse'' = foldr (\x acc -> x:acc) []
+reverse'' = foldl (\x acc -> x:acc) []
 
 elem'' :: (Eq a) => a -> [a] -> Bool
 elem'' n xs = foldl (\acc x -> if n == x then True else acc) False xs

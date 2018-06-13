@@ -15,3 +15,4 @@ maluquice = zipWith (flip div) [2,2..] [10,8,6,4,2]
 -- Curried + map
 
 functionApplicationTrick = map ($ 3) [(4+), (10*), (^2), sqrt]
+ 
