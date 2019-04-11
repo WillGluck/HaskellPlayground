@@ -20,6 +20,7 @@ doubleBelow100' x = (if x > 100 then x else x*2) + 1
 ----List comprehension-
 ----
 
+
 boomBangs :: (Num a, Ord a, Integral a) => [a] -> [String]
 boomBangs xs = [if x < 10 then "BOOM!" else "BANG!" | x <- xs, odd x]
 
